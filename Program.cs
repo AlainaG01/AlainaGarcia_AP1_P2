@@ -1,10 +1,16 @@
 using AlainaGarcia_AP1_P2.Components;
+using AlainaGarcia_AP1_P2.DAL;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+//Inyeccion del contexto
+var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
+builder.Services.AddDbContext<Contexto>(o => o.UseSqlServer("Name=SqlConStr"));
 
 var app = builder.Build();
 
