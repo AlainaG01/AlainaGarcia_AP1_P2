@@ -1,5 +1,7 @@
 using AlainaGarcia_AP1_P2.Components;
 using AlainaGarcia_AP1_P2.DAL;
+using AlainaGarcia_AP1_P2.Services;
+using Blazored.Toast;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +12,13 @@ builder.Services.AddRazorComponents()
 
 //Inyeccion del contexto
 var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
-builder.Services.AddDbContext<Contexto>(o => o.UseSqlServer("Name=SqlConStr"));
+builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlServer(ConStr));
+
+//Inyeccion del servicio
+builder.Services.AddScoped<RegistroServices>();
+
+//Notificaciones
+builder.Services.AddBlazorBootstrap();
 
 var app = builder.Build();
 
