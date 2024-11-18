@@ -10,35 +10,44 @@ public class RegistroServices(IDbContextFactory<Contexto> DbFactory)
     private async Task<bool> Existe(int id)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
+        return true;
     }
 
     private async Task<bool> Insertar(Registro registro)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
+        return true;
     }
 
     private async Task<bool> Modificar(Registro registro)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
+        return true;
     }
 
     public async Task<bool> Guardar(Registro registro)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
+        return true;
     }
 
     public async Task<bool> Eliminar(Registro registro)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
+        return true;
     }
 
     public async Task<Registro> Buscar(int id)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
+        var registro = new Registro();
+        return registro;
     }
 
     public async Task<List<Registro>> Listar(Expression<Func<Registro, bool>> criterio)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
+        var registro = new List<Registro>();
+        return registro;
     }
 }
