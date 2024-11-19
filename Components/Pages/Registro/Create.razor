@@ -1,5 +1,112 @@
-﻿<h3>Create</h3>
+﻿@page "/Create"
+
+@inject CombosServices combosService
+@inject CombosDetallesService combosDetallesService
+@inject ArticulosServices articulosService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+@inject ToastService Toast
+<Toasts class="p-3" AutoHide="true" Delay="4000" Placement="ToastsPlacement.TopRight" />
+
+
+@*HTML*@
+<PageTitle>Create</PageTitle>
+<EditForm Model="Combo" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h5 class="card-title">Crear Combo</h5>
+            </div>
+
+            @*Body*@
+            <div class="card-body">
+
+                @*Id*@
+                <div class="mb-3">
+                    <label class="form-label ms-4"><strong>ComboId</strong></label>
+                    <InputNumber class="form-control"
+                                 @bind-Value="Combo.ComboId" readonly></InputNumber>
+                </div>
+
+                @*Fecha*@
+                <div class="mb-3">
+                    <label class="form-label ms-4"><strong>Fecha</strong></label>
+                    <InputDate class="form-control" @bind-Value="Combo.Fecha"></InputDate>
+                </div>
+
+                @*Descripcion*@
+                <div class="mb-3">
+                    <label class="form-label ms-4"><strong>Descripci&oacute;n</strong></label>
+                    <InputText class="form-control" @bind-Value="Combo.Descripcion"></InputText>
+                </div>
+
+            </div>
+            @*Footer*@
+            <div class="card-footer text-center mt-2">
+                <a href="/Index" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
+                <button type="submit" class="btn btn-success bi bi-floppy-fill"></button>
+
+            </div>
+        </div>
+
+        
+    </div>
+</EditForm>
 
 @code {
+    public Combos Combo { get; set; } = new Combos();
+    public List<Productos> ListaProducto { get; set; } = new List<Productos>();
+    public CombosDetalles CombosDetalle { get; set; } = new CombosDetalles();
 
+    protected override async Task OnInitializedAsync()
+    {
+        ListaProducto = await combosDetallesService.Listar(a => a.ProductoId > 0);
+    }
+
+    public async Task Guardar()
+    {
+        var creado = await combosService.Guardar(Combo);
+
+        if (creado)
+        {
+            Toast.Notify(new(ToastType.Success, $"Se ha creado correctamente"));
+            navigationManager.NavigateTo("/Tecnicos/Trabajos/Index");
+        }
+        else
+        {
+            Toast.Notify(new(ToastType.Danger, $"No se ha creado correctamente"));
+        }
+    }
+
+    private async Task AgregarArticulo((Productos articulos, int cantidad) selection)
+    {
+
+        var articuloExistente = Combo.CombosDetalle
+            .FirstOrDefault(d => d.ProductoId == selection.articulos.ProductoId);
+
+        if (articuloExistente != null)
+        {
+            articuloExistente.Cantidad += selection.cantidad;
+            articuloExistente.Costo = articuloExistente.Producto.Costo * articuloExistente.Cantidad;
+        }
+        else
+        {
+            var Detalle = new CombosDetalles
+                {
+                    ProductoId = selection.articulos.ProductoId,
+                    Cantidad = selection.cantidad,
+                    Producto = selection.articulos,
+                    Costo = selection.articulos.Costo * selection.cantidad,
+                    ComboId = Combo.ComboId
+                };
+
+            Combo.CombosDetalle.Add(Detalle);
+        }
+
+        CombosDetalle = new CombosDetalles();
+        await Task.CompletedTask;
+    }
 }

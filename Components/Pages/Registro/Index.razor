@@ -1,7 +1,6 @@
 ﻿@page "/Index"
 
-
-@inject RegistroServices registroService
+@inject CombosServices comboService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
@@ -9,7 +8,7 @@
 <div class="container">
     <div class="card shadow-lg">
         <div class="card-header">
-            <h5 class="card-title">Registro</h5>
+            <h5 class="card-title">Registro de Combos</h5>
         </div>
 
         <div class="card-body">
@@ -34,8 +33,8 @@
                 <div class="col-3">
                     <InputSelect class="form-select" @bind-Value="Filtro">
                         <option value="" selected disabled>Elija una opci&oacute;n</option>
-                        <option value="-">-</option>
-                        <option value="-">-</option>
+                        <option value="-">Fecha</option>
+                        <option value="Descripcion">-</option>
                     </InputSelect>
                 </div>
 
@@ -76,66 +75,69 @@
             <table class="table table-hover">
                 <thead class="text-center">
                     <tr>
-                        <th><strong>Id</strong></th>
+                        <th><strong>ComboId</strong></th>
+                        <th><strong>Fecha</strong></th>
+                        <th><strong>Descripcion</strong></th>
+                        <th><strong>Precio</strong></th>
                         <th><strong>Editar</strong></th>
                         <th><strong>Eliminar</strong></th>
                     </tr>
                 </thead>
                 <tbody class="text-center">
-                    @* @foreach ()
+                    @foreach (var combo in ListaCombos)
                     {
                         <tr>
-                            <td> </td>
-                            <td> </td>
-                            <td></td>
+                            <td>@combo.ComboId</td>
+                            <td>@combo.Fecha</td>
+                            <td>@combo.Descripcion</td>
+                            <td>@combo.Precio</td>
 
                             <td class="text-center">
-                                <a href="/Registro/Details/@registro.Id" class="btn btn-outline-primary bi bi-eye"></a>
+                                <a href="/Edit/@combo.ComboId" class="btn btn-outline-primary bi bi-pencil-square"></a>
                             </td>
 
                             <td class="text-center">
-                                <a href="/Registro/Edit/@registro.Id" class="btn btn-outline-primary bi bi-pencil-square"></a>
-                            </td>
-
-                            <td class="text-center">
-                                <a href="/Registro/Delete/@registro.Id" class="btn btn-outline-danger bi bi-trash"></a>
+                                <a href="/Delete/@combo.ComboId" class="btn btn-outline-danger bi bi-trash"></a>
                             </td>
                         </tr>
 
-                    } *@
+                    }
                 </tbody>
             </table>
         </div>
         <div class="card-footer">
-            <a href="/Registro/Create" class="btn btn-primary"> <span class="bi bi-plus-square mt-3"></span> Crear</a>
+            <a href="/Create" class="btn btn-primary"> <span class="bi bi-plus-square mt-3"></span> Crear</a>
         </div>
     </div>
 </div>
 
 @code {
+    public List<Combos> ListaCombos { get; set; } = new List<Combos>();
+
     public string Filtro { get; set; } = string.Empty;
     public string ValorFiltro { get; set; } = string.Empty;
     public DateTime? Desde { get; set; }
     public DateTime? Hasta { get; set; }
 
 
+    protected override async Task OnInitializedAsync()
+    {
+        ListaCombos = await comboService.Listar(c => c.ComboId > 0);
+    }
+
     private async Task Buscar()
     {
         if (ValorFiltro.Trim() != "")
         {
-            if (Filtro == "")
+            if (Filtro == "Descripcion")
             {
-                
+                ListaCombos = await comboService.Listar(c => c.Descripcion.ToLower().Equals(ValorFiltro.ToLower()));
             }
-            else if (Filtro == "")
-            {
-                
-            }
+            
         }
         else if (Filtro == "Fecha")
         {
-            // Lista = await Service
-            // .Listar(f => f.Fecha >= Desde && f.Fecha <= Hasta);
+            ListaCombos = await comboService.Listar(f => f.Fecha >= Desde && f.Fecha <= Hasta);
         }
         else
         {
@@ -145,7 +147,7 @@
     }
     private async Task Restablecer()
     {
-        //Lista = await Service.Listar(e => e.Id > 0);
+        ListaCombos = await comboService.Listar(e => e.ComboId > 0);
         Filtro = string.Empty;
         ValorFiltro = string.Empty;
     }

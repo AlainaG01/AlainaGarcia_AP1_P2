@@ -15,7 +15,9 @@ var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
 builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlServer(ConStr));
 
 //Inyeccion del servicio
-builder.Services.AddScoped<RegistroServices>();
+builder.Services.AddScoped<CombosServices>();
+builder.Services.AddScoped<CombosDetallesService>();
+builder.Services.AddScoped<ArticulosServices>();
 
 //Notificaciones
 builder.Services.AddBlazorBootstrap();
