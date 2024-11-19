@@ -15,4 +15,17 @@ public class CombosDetallesService(IDbContextFactory<Contexto> DbFactory)
         .Where(criterio)
         .ToListAsync();
     }
+
+    public async Task<bool> Eliminar(int detalleId)
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+        var detalle = await contexto.CombosDetalles.FindAsync(detalleId);
+        if (detalle != null)
+        {
+            contexto.CombosDetalles.Remove(detalle);
+            await contexto.SaveChangesAsync();
+            return true;
+        }
+        return false;
+    }
 }
