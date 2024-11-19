@@ -5,7 +5,7 @@ namespace AlainaGarcia_AP1_P2.Models;
 public class Productos
 {
     [Key]
-    public int ArticuloId { get; set; }
+    public int ProductoId { get; set; }
 
     [Required(ErrorMessage ="Campo obligatorio")]
     public string? Descripcion { get; set; }

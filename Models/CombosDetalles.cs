@@ -14,9 +14,9 @@ public class CombosDetalles
     public Combos? Combo { get; set; }
 
     [Required(ErrorMessage = "Campo obligatorio")]
-    [ForeignKey("Articulo")]
-    public int ArticuloId { get; set; }
-    public Productos? Articulo { get; set; }
+    [ForeignKey("Producto")]
+    public int ProductoId { get; set; }
+    public Productos? Producto { get; set; }
 
     [Required(ErrorMessage = "Campo obligatorio")]
     public int Cantidad { get; set; }

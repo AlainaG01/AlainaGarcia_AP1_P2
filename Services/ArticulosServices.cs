@@ -10,7 +10,7 @@ public class ArticulosServices(IDbContextFactory<Contexto> DbFactory)
     public async Task<List<Productos>> Listar(Expression<Func<Productos, bool>> criterio)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
-        return await contexto.Articulos
+        return await contexto.Productos
         .AsNoTracking()
         .Where(criterio)
         .ToListAsync();

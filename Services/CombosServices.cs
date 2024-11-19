@@ -87,7 +87,7 @@ public class CombosServices(IDbContextFactory<Contexto> DbFactory)
         await using var contexto = await DbFactory.CreateDbContextAsync();
         return await contexto.Combos
         .Include(m => m.CombosDetalle)
-        .ThenInclude(md => md.Articulo)
+        .ThenInclude(md => md.Producto)
         .FirstOrDefaultAsync(m => m.ComboId == id);
     }
 

@@ -57,13 +57,13 @@
 </EditForm>
 
 @code {
-    public Combos Combo { get; set; }
-    public List<Productos> ListaArticulos { get; set; }
-    public CombosDetalles CombosDetalle { get; set; }
+    public Combos Combo { get; set; } = new Combos();
+    public List<Productos> ListaProducto { get; set; } = new List<Productos>();
+    public CombosDetalles CombosDetalle { get; set; } = new CombosDetalles();
 
     protected override async Task OnInitializedAsync()
     {
-        ListaArticulos = await articulosService.Listar(a => a.ArticuloId > 0);
+        ListaProducto = await combosDetallesService.Listar(a => a.ProductoId > 0);
     }
 
     public async Task Guardar()
@@ -85,20 +85,20 @@
     {
 
         var articuloExistente = Combo.CombosDetalle
-            .FirstOrDefault(d => d.ArticuloId == selection.articulos.ArticuloId);
+            .FirstOrDefault(d => d.ProductoId == selection.articulos.ProductoId);
 
         if (articuloExistente != null)
         {
             articuloExistente.Cantidad += selection.cantidad;
-            articuloExistente.Costo = articuloExistente.Articulo.Costo * articuloExistente.Cantidad;
+            articuloExistente.Costo = articuloExistente.Producto.Costo * articuloExistente.Cantidad;
         }
         else
         {
             var Detalle = new CombosDetalles
                 {
-                    ArticuloId = selection.articulos.ArticuloId,
+                    ProductoId = selection.articulos.ProductoId,
                     Cantidad = selection.cantidad,
-                    Articulo = selection.articulos,
+                    Producto = selection.articulos,
                     Costo = selection.articulos.Costo * selection.cantidad,
                     ComboId = Combo.ComboId
                 };
