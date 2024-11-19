@@ -96,11 +96,11 @@ public class CombosServices(IDbContextFactory<Contexto> DbFactory)
         await using var contexto = await DbFactory.CreateDbContextAsync();
         foreach (var item in detalles)
         {
-            var detalle = await contexto.CombosDetalles.SingleAsync(d => d.DetalleId == item.DetalleId);
+            var detalle = await contexto.Productos.SingleOrDefaultAsync(d => d.ProductoId == item.ProductoId);
             if (resta)
-                detalle.Cantidad -= item.Cantidad;
+                detalle.Existencia -= item.Cantidad;
             else
-                detalle.Cantidad += item.Cantidad;
+                detalle.Existencia += item.Cantidad;
         }
         await contexto.SaveChangesAsync();
     }
