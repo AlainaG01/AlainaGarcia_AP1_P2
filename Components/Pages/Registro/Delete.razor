@@ -1,5 +1,79 @@
-﻿<h3>Delete</h3>
+﻿@page "/Delete/{ComboId:int}"
+
+@inject CombosServices combosService
+@inject CombosDetallesService combosDetallesService
+@inject ArticulosServices articulosService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+@inject ToastService Toast
+<Toasts class="p-3" AutoHide="true" Delay="4000" Placement="ToastsPlacement.TopRight" />
+
+@*HTML*@
+<PageTitle>Delete</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*header*@
+        <div class="card-header text-center">
+            <h3><strong>Eliminar Combo</strong></h3>
+        </div>
+
+        @*body*@
+        <div class="card-body">
+            <div class="text-center">
+                <h4><strong>¿Desea eliminar este combo?</strong></h4>
+            </div>
+            <ul>
+                <li><strong>ComboId: </strong>@Combo.ComboId</li>
+                <li><strong>Fecha: </strong>@Combo.Fecha</li>
+                <li><strong>Descripcion: </strong>@Combo.Descripcion</li>
+                <li><strong>Precio: </strong>@Combo.Precio</li>
+                <li><strong>Vendido: </strong>@Combo.Vendido</li>
+            </ul>
+            <div class="border border-success p-2 mt-2">
+                <h5>Detalles de articulos utilizados</h5>
+                <ul class="mt-3">
+                    @foreach (var detalle in Combo.CombosDetalle)
+                    {
+                        <li class="mt-2">
+                            Articulo ID: @detalle.ProductoId -- @detalle.Producto?.Descripcion -- Cantidad: @detalle.Cantidad
+                            -- Precio:$ @detalle.Producto?.Precio -- PrecioTotal: $ @detalle.Costo
+            
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    @*Footer*@
+    <div class="card-footer text-center">
+        <a href="/Index" class="btn btn-secondary"> <span class="bi bi-arrow-left"></span> Volver</a>
+        <button type="submit" class="btn btn-danger bi bi-trash" @onclick="Eliminar"></button>
+    </div>
+</div>
 
 @code {
+    [Parameter]
+    public int ComboId { get; set; }
 
+    public Combos Combo { get; set; } = new Combos();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Combo = await combosService.BuscarConDetalle(ComboId);
+    }
+
+    public async Task Eliminar()
+    {
+        var eliminado = await combosService.Eliminar(Combo.ComboId);
+
+        if (eliminado)
+        {
+            Toast.Notify(new(ToastType.Success, $"Eliminado correctamente"));
+            navigationManager.NavigateTo("/Index");
+        }
+        else
+        {
+            Toast.Notify(new(ToastType.Danger, $"No se ha eliminado correctamente"));
+        }
+    }
 }
