@@ -24,17 +24,46 @@ public class CombosServices(IDbContextFactory<Contexto> DbFactory)
     private async Task<bool> Modificar(Combos combo)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
+
         var comboOriginal = await contexto.Combos
-            .Include(m => m.CombosDetalle)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(m => m.ComboId == combo.ComboId);
+            .Include(t => t.CombosDetalle)
+            .FirstOrDefaultAsync(t => t.ComboId == combo.ComboId);
+
+        if (comboOriginal == null)
+            return false;
 
         await AfectarCantidad(comboOriginal.CombosDetalle.ToArray(), false);
+
+        foreach (var detalleOriginal in comboOriginal.CombosDetalle)
+        {
+            if (!combo.CombosDetalle.Any(d => d.DetalleId == detalleOriginal.DetalleId))
+            {
+                contexto.CombosDetalles.Remove(detalleOriginal);
+            }
+        }
+
         await AfectarCantidad(combo.CombosDetalle.ToArray(), true);
 
-        contexto.Update(combo);
+        contexto.Entry(comboOriginal).CurrentValues.SetValues(combo);
+
+        foreach (var detalle in combo.CombosDetalle)
+        {
+            var detalleExistente = comboOriginal.CombosDetalle
+                .FirstOrDefault(d => d.DetalleId == detalle.DetalleId);
+
+            if (detalleExistente != null)
+            {
+                contexto.Entry(detalleExistente).CurrentValues.SetValues(detalle);
+            }
+            else
+            {
+                comboOriginal.CombosDetalle.Add(detalle);
+            }
+        }
+
         return await contexto.SaveChangesAsync() > 0;
     }
+
 
     public async Task<bool> Guardar(Combos combo)
     {
