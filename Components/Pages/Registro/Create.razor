@@ -125,7 +125,7 @@
     {
         if (await Validar())
         {
-            Mensaje = "Ya existe un trabajo con este ID";
+            Toast.Notify(new(ToastType.Danger, $"Ya existe un combo con este ID"));
             return;
         }
         Combo.Precio = Combo.CombosDetalle.Sum(d => d.Costo);
@@ -133,20 +133,31 @@
 
         if (crear)
         {
-            Mensaje = "Se ha creado correctamente el trabajo";
+            Toast.Notify(new(ToastType.Success, $"Creado correctamente"));
             navigationManager.NavigateTo("/Index");
         }
         else
         {
-            Mensaje = "No se ha creado correctamente el trabajo";
+            Toast.Notify(new(ToastType.Danger, $"No se ha creado correctamente"));
         }
 
     }
 
-    public void Eliminar(CombosDetalles detalle)
+    public async Task Eliminar(CombosDetalles detalle)
     {
-        Combo.CombosDetalle.Remove(detalle);
-        Detalle.Cantidad = detalle.Cantidad;
-        Detalle.ProductoId = detalle.ProductoId;
+        var resultado = await combosDetallesService.Eliminar(detalle.DetalleId);
+
+        if (resultado)
+        {
+            Combo.CombosDetalle.Remove(detalle);
+            Detalle.Cantidad = detalle.Cantidad;
+            Detalle.ProductoId = detalle.ProductoId;
+
+            Toast.Notify(new(ToastType.Success, $"Producto eliminado correctamente"));
+        }
+        else
+        {
+            Toast.Notify(new(ToastType.Danger, $"Error al eliminar el producto"));
+        }
     }
 }
