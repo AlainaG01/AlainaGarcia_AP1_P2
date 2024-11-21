@@ -6,7 +6,7 @@
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 @inject ToastService Toast
-<Toasts class="p-3" AutoHide="true" Delay="4000" Placement="ToastsPlacement.TopRight" />
+<Toasts class="p-3" AutoHide="true" Delay="2000" Placement="ToastsPlacement.TopRight" />
 
 @*HTML*@
 
@@ -45,6 +45,12 @@
                     <InputText class="form-control"
                                @bind-Value="Combo.Descripcion"></InputText>
                 </div>
+
+                @*Vendido*@
+                <div class="mb-3">
+                    <label for="Vendido" class="form-label"><strong>¿Vendido?</strong></label>
+                    <InputCheckbox class="form-check-input" @bind-Value="Combo.Vendido" />
+                </div>
 
                 @*detalle*@
                 <div class="border border-success p-3 mt-3">
@@ -134,6 +140,7 @@
         if (modificar)
         {
             Toast.Notify(new(ToastType.Success, $"Modificado correctamente"));
+            await Task.Delay(2000);
             navigationManager.NavigateTo("/Index");
         }
         else
