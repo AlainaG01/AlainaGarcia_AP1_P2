@@ -6,7 +6,7 @@
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 @inject ToastService Toast
-<Toasts class="p-3" AutoHide="true" Delay="4000" Placement="ToastsPlacement.TopRight" />
+<Toasts class="p-3" AutoHide="true" Delay="2000" Placement="ToastsPlacement.TopRight" />
 
 @*HTML*@
 <PageTitle>Delete</PageTitle>
@@ -69,6 +69,7 @@
         if (eliminado)
         {
             Toast.Notify(new(ToastType.Success, $"Eliminado correctamente"));
+            await Task.Delay(2000);
             navigationManager.NavigateTo("/Index");
         }
         else
