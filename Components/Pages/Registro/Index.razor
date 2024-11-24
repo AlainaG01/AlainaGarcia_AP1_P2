@@ -33,8 +33,8 @@
                 <div class="col-3">
                     <InputSelect class="form-select" @bind-Value="Filtro">
                         <option value="" selected disabled>Elija una opci&oacute;n</option>
-                        <option value="-">Fecha</option>
-                        <option value="Descripcion">-</option>
+                        <option value="Fecha">Fecha</option>
+                        <option value="Descripcion">Descripcion</option>
                     </InputSelect>
                 </div>
 
@@ -133,7 +133,7 @@
         {
             if (Filtro == "Descripcion")
             {
-                ListaCombos = await comboService.Listar(c => c.Descripcion.ToLower().Equals(ValorFiltro.ToLower()));
+                ListaCombos = await comboService.Listar(c => c.Descripcion.ToLower().Contains(ValorFiltro.ToLower()));
             }
             
         }
