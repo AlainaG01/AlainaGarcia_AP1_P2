@@ -68,8 +68,7 @@
                         @foreach (var detalle in Combo.CombosDetalle)
                         {
                             <li class="mt-2">
-                                Articulo ID: @detalle.ProductoId -- @detalle.Producto?.Descripcion -- Cantidad: @detalle.Cantidad
-                                -- Precio:$ @detalle.Producto?.Precio -- PrecioTotal: $ @detalle.Costo
+                                Articulo ID: @detalle.ProductoId -- @detalle.Producto?.Descripcion -- Cantidad: @detalle.Cantidad  -- Costo: $ @detalle.Costo
                                 <button type="button" @onclick="() => Eliminar(detalle)" class="btn btn-outline-danger btn-sm ms-2 bi bi-trash"></button>
                             </li>
                         }
