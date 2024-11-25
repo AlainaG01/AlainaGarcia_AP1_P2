@@ -6,7 +6,7 @@
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 @inject ToastService Toast
-<Toasts class="p-3" AutoHide="true" Delay="2000" Placement="ToastsPlacement.TopRight" />
+<Toasts class="p-3" AutoHide="true" Delay="3000" Placement="ToastsPlacement.TopRight" />
 
 @*HTML*@
 <PageTitle>Delete</PageTitle>
@@ -64,17 +64,27 @@
 
     public async Task Eliminar()
     {
-        var eliminado = await combosService.Eliminar(Combo.ComboId);
-
-        if (eliminado)
+        if (!Combo.Vendido)
         {
-            Toast.Notify(new(ToastType.Success, $"Eliminado correctamente"));
-            await Task.Delay(2000);
-            navigationManager.NavigateTo("/Index");
+            var eliminado = await combosService.Eliminar(Combo.ComboId);
+
+            if (eliminado)
+            {
+                Toast.Notify(new(ToastType.Success, $"Eliminado correctamente"));
+                await Task.Delay(3000);
+                navigationManager.NavigateTo("/Index");
+            }
+            else
+            {
+                Toast.Notify(new(ToastType.Danger, $"No se ha eliminado correctamente"));
+            }
         }
         else
         {
-            Toast.Notify(new(ToastType.Danger, $"No se ha eliminado correctamente"));
+            Toast.Notify(new(ToastType.Danger, $"No se ha eliminado el combo porque esta vendido"));
+            await Task.Delay(3000);
+            navigationManager.NavigateTo("/Index");
         }
+
     }
 }
