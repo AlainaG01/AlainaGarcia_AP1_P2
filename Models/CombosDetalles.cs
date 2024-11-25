@@ -19,8 +19,10 @@ public class CombosDetalles
     public Productos? Producto { get; set; }
 
     [Required(ErrorMessage = "Campo obligatorio")]
+    [RegularExpression(@"^\d?$", ErrorMessage = "Solo se permiten numeros enteros")]
     public int Cantidad { get; set; }
 
     [Required(ErrorMessage = "Campo obligatorio")]
+    [RegularExpression(@"^\d+(\.\d+)?$", ErrorMessage = "Solo se permiten numeros enteros o decimales")]
     public double Costo { get; set; }
 }
